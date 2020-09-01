@@ -28,6 +28,11 @@ def make_distribution_plot(
         fig_kwargs={},
         plot_kwargs={}
     ):
+    default_fig_kwargs = {
+        "y_axis_label": "Probability Density"
+    }
+    default_fig_kwargs.update(fig_kwargs)
+
     if label_column is not None:
         target_names = df[label_column].unique()
         feature_name = df.set_index(label_column).columns[0]
@@ -35,7 +40,8 @@ def make_distribution_plot(
         target_names = [None]
         feature_name = df.columns[0]
 
-    p = figure(tools="", **fig_kwargs)
+    p = figure(tools="", **default_fig_kwargs)
+    p.yaxis.major_label_text_font_size = '0pt' # don't worry about actual prob values
 
     bins = np.linspace(df[feature_name].min(), df[feature_name].max(), n_bins+1)
     bin_width = (df[feature_name].max() - df[feature_name].min()) / (n_bins+1)
@@ -53,8 +59,8 @@ def make_distribution_plot(
         spl = UnivariateSpline(bins[:-1] + bin_width, values, s=2)
         x = np.linspace(bins[0]+bin_width, bins[-1]-bin_width, 100)
         y = spl(x)
-        y = np.clip(y, 0, np.inf)
-        y *= np.diff(x)[0]
+        y = np.clip(y, 0, np.inf) # clip negative values
+        y *= np.diff(x)[0] # integrate to 1
 
         p.line(x, y, line_color=color, name=class_name, **plot_kwargs)
     return p
