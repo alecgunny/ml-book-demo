@@ -73,14 +73,11 @@ def make_2d_scatter_plot(
         plot_kwargs={}
     ):
     default_plot_kwargs = {
-        "line_color": "color",
-        "fill_color": "color",
         "line_alpha": 0.8,
         "fill_alpha": 0.4,
         "line_width": 1.2,
         "size": 6
     }
-    default_plot_kwargs.update(plot_kwargs)
 
     df = df.copy()
     tooltips = []
@@ -109,7 +106,11 @@ def make_2d_scatter_plot(
         tooltips.append(tooltip)
 
         default_plot_kwargs["legend_group"] = formatted_column
+        default_plot_kwargs["line_color"] = "color"
+        default_plot_kwargs["fill_color"] = "color"
+
     source = ColumnDataSource(df)
+    default_plot_kwargs.update(plot_kwargs)
 
     p = figure(tools="", **fig_kwargs)
     p.circle("x", "y", source=source, name="scatter", **default_plot_kwargs)
