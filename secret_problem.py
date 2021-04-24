@@ -14,6 +14,8 @@ from bokeh.plotting import figure
 from bokeh.layouts import column, row
 
 
+# Define a bunch of properties of our data
+# and datset up front
 # the secret parameters that only nature knows
 a = 2
 b = 4
@@ -22,7 +24,7 @@ sigma = 4
 
 # the best line parameters that only nature knows
 m_star = b
-k_star = c + a
+b_star = c + a
 
 # some arbitrary number of observations
 N = 250
@@ -33,6 +35,7 @@ def true_function(x):
     The oracle!
     """
     return a*x**2 + b*x + c
+
 
 # generate some observations deterministically
 rng = np.random.default_rng(10151988)
@@ -53,7 +56,7 @@ data = pd.DataFrame({
 def _compute_cost_surface(sample_size=None):
     grid_dim = 50
     m = np.linspace(m_star - 5, m_star + 5, grid_dim)
-    k = np.linspace(k_star - 5, k_star + 5, grid_dim)
+    k = np.linspace(b_star - 5, b_star + 5, grid_dim)
     kk, mm = np.meshgrid(k, m)
 
     if sample_size is not None:
@@ -73,7 +76,7 @@ def _compute_cost_surface(sample_size=None):
     source = ColumnDataSource({
         "slope": [mm],
         "intercept": [kk],
-        "x": [k_star - 5],
+        "x": [b_star - 5],
         "y": [m_star - 5],
         "dw": [10],
         "dh": [10],
@@ -99,7 +102,7 @@ def _init_surface_plot(sample_size, fig_kwargs):
         title=title,
         x_axis_label="intercept",
         y_axis_label="slope",
-        x_range=(k_star - 5, k_star + 5),
+        x_range=(b_star - 5, b_star + 5),
         y_range=(m_star - 5, m_star + 5),
         tools="",
         **default_fig_kwargs
@@ -128,7 +131,7 @@ def plot_cost_surface(sample_size=None, fig_kwargs=None):
 
     items = []
     r = p.plus(
-        [k_star],
+        [b_star],
         [m_star],
         line_color="#000000",
         line_width=0.8,
@@ -208,7 +211,7 @@ def plot_surfaces_side_by_side(fig_kwargs=None):
             level="image"
         )
         r = p.plus(
-            [k_star],
+            [b_star],
             [m_star],
             line_color="#000000",
             line_width=0.8,
