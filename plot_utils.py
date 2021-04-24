@@ -102,7 +102,7 @@ def make_2d_scatter_plot(
             df[formatted_column] = df[label_column]
             df = df.drop(columns=label_column)
 
-        tooltip = ('Class', "@"+formatted_column)
+        tooltip = ("Class", "@"+formatted_column)
         tooltips.append(tooltip)
 
         default_plot_kwargs["legend_group"] = formatted_column
